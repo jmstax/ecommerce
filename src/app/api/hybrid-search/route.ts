@@ -15,13 +15,14 @@ interface HybridSortOptions {
     };
   };
   limit?: number;
+  rerankQuery?: string;
 }
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
-  const query = searchParams.get('query');
-  const terms = searchParams.get('terms');
-  const collectionName = 'products';
+  const query = searchParams.get("query");
+  const terms = searchParams.get("terms");
+  const collectionName = "products";
 
   try {
     // Log environment variables (without exposing full token)
@@ -59,6 +60,7 @@ export async function GET(request: Request) {
 
     if (terms) {
       sortOptions.sort.$hybrid.$lexical = terms;
+      sortOptions.rerankQuery = `${query} Keywords: ${terms}`;
     }
 
     console.log("Performing hybrid search with options:", sortOptions);
